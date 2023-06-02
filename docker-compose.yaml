@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+
+  db:
+    image: postgres:15.3-alpine
+    environment:
+      - POSTGRES_USER=${PSQL_USER}
+      - POSTGRES_PASSWORD=${PSQL_PASSWORD}
+      - POSTGRES_DB=${PSQL_DATABASE}
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  django-app:
+    build:
+      context: ./main_dir
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./main_dir/:/usr/src/main_dir/
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_db:
