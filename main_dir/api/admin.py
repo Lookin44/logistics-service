@@ -22,4 +22,5 @@ class TransportAdmin(admin.ModelAdmin):
         'current_location',
         'tonnage',
     )
-    readonly_fields = ('current_location', )
+    exclude = ('current_location', )
+
