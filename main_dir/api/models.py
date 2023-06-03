@@ -150,6 +150,7 @@ class Cargo(BaseModel):
     description = models.CharField(
         verbose_name='Описание товара',
         help_text='Введите небольшое описание товара, для курьера.',
+        default='Без описания.'
     )
 
     class Meta:

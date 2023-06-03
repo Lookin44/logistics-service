@@ -9,6 +9,8 @@ ENV PYTHONUNBUFFERED 1
 
 COPY . .
 
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip && pip install -r requirements.txt &&  \
+    sed -i 's/\r$//g' /usr/src/main_dir/entrypoint.sh &&  \
+    chmod +x /usr/src/main_dir/entrypoint.sh
 
-RUN pip install -r requirements.txt
+ENTRYPOINT [ "/usr/src/main_dir/entrypoint.sh" ]
