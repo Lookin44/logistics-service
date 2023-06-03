@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Location, Transport
+from .models import Location, Transport, Cargo
 
 
 @admin.register(Location)
@@ -24,3 +24,13 @@ class TransportAdmin(admin.ModelAdmin):
     )
     exclude = ('current_location', )
 
+
+@admin.register(Cargo)
+class CargoAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'location_up',
+        'location_delivery',
+        'weight',
+        'description',
+    )

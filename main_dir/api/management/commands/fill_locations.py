@@ -37,13 +37,13 @@ class Command(BaseCommand):
                     ))
             Location.objects.bulk_create(locations_list)
             logger.info('Добавлены базовые локации.')
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             logger.error(
                 'Отсутствует файл со стандартными локациями. '
                 'Проверьте что файл uszips.csv находиться в директории '
                 'main_dir.'
             )
-        except IntegrityError as e:
+        except IntegrityError:
             logger.error(
                 'Встретились дубликаты записей. Вероятно локации уже '
                 'загружены в базу данных.'

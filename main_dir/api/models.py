@@ -12,8 +12,13 @@ from django.core.validators import (
 
 
 class BaseModel(models.Model):
-    created_at = models.DateTimeField(db_index=True, default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(
+        db_index=True,
+        default=timezone.now,
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
 
     class Meta:
         abstract = True
@@ -26,11 +31,11 @@ class Location(BaseModel):
     )
     state = models.CharField(
         max_length=100,
-        verbose_name='Штат / Область'
+        verbose_name='Штат / Область',
     )
     postcode = models.IntegerField(
         unique=True,
-        verbose_name='Почтовый индекс'
+        verbose_name='Почтовый индекс',
     )
     latitude = models.DecimalField(
         verbose_name='Широта',
@@ -39,13 +44,13 @@ class Location(BaseModel):
         validators=[
             MinValueValidator(
                 -90.0,
-                'Широта не может быть ниже -90 градусов.'
+                'Широта не может быть ниже -90 градусов.',
             ),
             MaxValueValidator(
                 90.0,
-                'Широта не может быть выше 90 градусов.'
-            )
-        ]
+                'Широта не может быть выше 90 градусов.',
+            ),
+        ],
     )
     longitude = models.DecimalField(
         verbose_name='Долгота',
@@ -54,13 +59,13 @@ class Location(BaseModel):
         validators=[
             MinValueValidator(
                 -180.0,
-                'Долгота не может быть ниже -180 градусов.'
+                'Долгота не может быть ниже -180 градусов.',
             ),
             MaxValueValidator(
                 180.0,
-                'Долгота не может быть выше 180 градусов.'
-            )
-        ]
+                'Долгота не может быть выше 180 градусов.',
+            ),
+        ],
     )
 
     class Meta:
@@ -79,8 +84,8 @@ class Transport(BaseModel):
         validators=[
             RegexValidator(
                 r'^(?:[1-9][0-9]{2}[1-9]|[1-9][0-9]{3}[A-Z])$',
-                'Неверный формат номера.'
-            )
+                'Неверный формат номера.',
+            ),
         ],
         unique=True,
         help_text='Первые четыре цифры в диапазоне от 1000 до 9999, затем '
@@ -92,13 +97,14 @@ class Transport(BaseModel):
         on_delete=models.SET_NULL,
         null=True,
         verbose_name='Локация',
+        related_name='locations',
     )
     tonnage = models.PositiveIntegerField(
         verbose_name='Доступный вес',
         help_text='Допустимое значение от 1 до 1000',
         validators=[
             MinValueValidator(1, 'Вес не может быть ниже 1.'),
-            MaxValueValidator(1000, 'Вес не может превышать 1000.')
+            MaxValueValidator(1000, 'Вес не может превышать 1000.'),
         ],
     )
 
@@ -119,11 +125,34 @@ class Transport(BaseModel):
 
 
 class Cargo(BaseModel):
+    location_up = models.ForeignKey(
+        'Location',
+        on_delete=models.CASCADE,
+        related_name='up_locations',
+        verbose_name='Локация загрузки',
+        help_text='Выберите место загрузки.',
+    )
+    location_delivery = models.ForeignKey(
+        'Location',
+        on_delete=models.CASCADE,
+        related_name='down_locations',
+        verbose_name='Локация разгрузки',
+        help_text='Выберите место разгрузки.',
+    )
     weight = models.PositiveIntegerField(
         verbose_name='Вес',
         help_text='Допустимое значение от 1 до 1000',
         validators=[
             MinValueValidator(1, 'Вес не может быть ниже 1.'),
-            MaxValueValidator(1000, 'Вес не может превышать 1000.')
+            MaxValueValidator(1000, 'Вес не может превышать 1000.'),
         ],
     )
+    description = models.CharField(
+        verbose_name='Описание товара',
+        help_text='Введите небольшое описание товара, для курьера.',
+    )
+
+    class Meta:
+        verbose_name = 'Груз'
+        verbose_name_plural = 'Грузы'
+        ordering = ['pk']
