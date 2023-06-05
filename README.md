@@ -102,3 +102,26 @@ POST запрос для создания груза на адрес http://127.
     "weight": 500
 }
 ```
+
+PATCH - запрос на изменение груза на адрес http://127.0.0.1:8000/api/v1/cargos/{id-груза}/:
+
+```json
+{
+    "location_up": "20322",
+    "location_delivery": "1743",
+    "description": "Гвозди",
+    "weight": 100
+}
+```
+
+PATCH - запрос на изменение транспорта на адрес http://127.0.0.1:8000/api/v1/transport/{id-транспорта}/
+
+ВНИМАНИЕ: параметр current_location принимает почтовый индекс (zip)
+```json
+{
+    "pk": 1,
+    "current_location": "1542",
+    "number": "2442Z",
+    "tonnage": 522
+}
+```
