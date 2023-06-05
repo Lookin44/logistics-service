@@ -8,7 +8,7 @@ class LocationAdmin(admin.ModelAdmin):
         'pk',
         'city',
         'state',
-        'postcode',
+        'zip_code',
         'latitude',
         'longitude',
     )

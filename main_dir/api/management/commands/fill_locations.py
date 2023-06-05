@@ -23,7 +23,7 @@ class Command(BaseCommand):
             with open(file_path, 'r') as file:
                 reader = csv.DictReader(file)
                 for row in reader:
-                    postcode = int(row['zip'])
+                    zip_code = int(row['zip'])
                     latitude = float(row['lat'])
                     longitude = float(row['lng'])
                     city = row['city']
@@ -31,7 +31,7 @@ class Command(BaseCommand):
                     locations_list.append(Location(
                         city=city,
                         state=state,
-                        postcode=postcode,
+                        zip_code=zip_code,
                         latitude=latitude,
                         longitude=longitude,
                     ))

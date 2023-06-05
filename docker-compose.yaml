@@ -17,7 +17,6 @@ services:
     build:
       context: ./main_dir
       dockerfile: Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./main_dir/:/usr/src/main_dir/
     env_file:
@@ -27,5 +26,43 @@ services:
     ports:
       - "8000:8000"
 
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    command: redis-server
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_db:/usr/local/etc/redis
+
+  celery-worker:
+    build:
+      context: ./main_dir
+      dockerfile: Dockerfile.service
+    volumes:
+      - ./main_dir/:/usr/src/main_dir/
+    env_file:
+      - .env
+    command: celery -A config worker --loglevel=info
+    links:
+      - redis
+    depends_on:
+      - db
+      - redis
+
+  celery-beat:
+    build:
+      context: ./main_dir
+      dockerfile: Dockerfile.service
+    volumes:
+      - ./main_dir/:/usr/src/main_dir/
+    env_file:
+      - .env
+    command: celery -A config beat -l info -S django --loglevel=info
+    depends_on:
+      - db
+      - redis
+
 volumes:
   postgres_db:
+  redis_db:

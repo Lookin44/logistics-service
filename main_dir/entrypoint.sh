@@ -15,5 +15,6 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py fill_locations
 python manage.py transport_add
+python manage.py runserver 0.0.0.0:8000
 
 exec "$@"

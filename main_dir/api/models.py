@@ -1,7 +1,5 @@
 import random
-import re
 
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.core.validators import (
@@ -33,7 +31,8 @@ class Location(BaseModel):
         max_length=100,
         verbose_name='Штат / Область',
     )
-    postcode = models.IntegerField(
+    zip_code = models.CharField(
+        max_length=6,
         unique=True,
         verbose_name='Почтовый индекс',
     )
@@ -113,6 +112,9 @@ class Transport(BaseModel):
         verbose_name_plural = 'Транспорты'
         ordering = ['pk']
 
+    def __str__(self):
+        return self.number
+
     @staticmethod
     def random_location():
         random_location = random.choice(Location.objects.all())
@@ -157,3 +159,6 @@ class Cargo(BaseModel):
         verbose_name = 'Груз'
         verbose_name_plural = 'Грузы'
         ordering = ['pk']
+
+    def __str__(self):
+        return self.description

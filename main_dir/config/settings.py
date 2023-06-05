@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from datetime import timedelta
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,6 +21,8 @@ INSTALLED_APPS = [
 
     # Сторонние библиотеки
     'rest_framework',
+    'django_filters',
+    'django_celery_beat',
 
     # Собственные приложения
     'api',
@@ -95,7 +98,7 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'ERROR',
+        'level': 'INFO',
     },
 }
 
@@ -106,3 +109,25 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ]
+}
+
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+
+CELERY_BEAT_SCHEDULE = {
+    'change_transport_location_every_3_minutes': {
+        'task': 'api.tasks.change_transport_location',
+        'schedule': timedelta(minutes=3),
+    },
+}
