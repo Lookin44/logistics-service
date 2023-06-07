@@ -6,6 +6,7 @@ from .models import Cargo, Location, Transport
 
 
 class CargoSerializer(serializers.ModelSerializer):
+
     location_up = serializers.SlugRelatedField(
         slug_field='zip_code',
         queryset=Location.objects.all()
@@ -31,7 +32,6 @@ class CargoSerializer(serializers.ModelSerializer):
         """
         Метод подсчитывающий количество близлежащего транспорта
         """
-
         count = 0
         transports = Transport.objects.select_related('current_location')
         location_up = (
@@ -81,13 +81,15 @@ class CargoDetailSerializer(serializers.ModelSerializer):
             obj.location_up.longitude
         )
         transports = Transport.objects.select_related('current_location')
+
         for unit in transports:
             lat = unit.current_location.latitude
             long = unit.current_location.longitude
             unit_location = (lat, long)
+            distance = geodesic(location_up, unit_location).mi
             unit_detail = {
                 'number': unit.number,
-                'distance': geodesic(location_up, unit_location).mi
+                'distance': f'{distance} миль до текущего груза'
             }
             transport_list.append(unit_detail)
         return sorted(transport_list, key=lambda x: x['distance'])

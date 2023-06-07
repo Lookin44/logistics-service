@@ -5,7 +5,7 @@ from .views import CargoViewSet, TransportViewSet
 
 
 router = SimpleRouter()
-router.register('cargos', CargoViewSet)
+router.register('cargos', CargoViewSet, basename='cargos')
 router.register('transport', TransportViewSet)
 
 urlpatterns = [

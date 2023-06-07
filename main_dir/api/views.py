@@ -12,8 +12,8 @@ from .serializers import (
 
 class CargoViewSet(viewsets.ModelViewSet):
     queryset = Cargo.objects.select_related(
-        'location_up',
-        'location_delivery'
+            'location_up',
+            'location_delivery'
     )
     serializer_class = CargoDetailSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']

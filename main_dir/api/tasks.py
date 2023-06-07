@@ -11,12 +11,13 @@ logger = logging.getLogger(__name__)
 
 @shared_task
 def change_transport_location():
-    query = Transport.objects.all()
+    transport = Transport.objects.all()
     locations = Location.objects.all()
-    if not query:
+    if not transport:
         logger.error('В базе данных отсутствует транспорт')
 
-    for unit in query:
-        unit.current_location = random.choice(locations)
+    for unit in transport:
+        new_location = random.choice(locations)
+        unit.current_location = new_location
         unit.save()
         logger.info(f'У транспорта {unit} изменена локация')

@@ -1,5 +1,3 @@
-import random
-
 from django.db import models
 from django.utils import timezone
 from django.core.validators import (
@@ -7,6 +5,8 @@ from django.core.validators import (
     MaxValueValidator,
     RegexValidator,
 )
+
+from .utils import random_location
 
 
 class BaseModel(models.Model):
@@ -97,6 +97,7 @@ class Transport(BaseModel):
         null=True,
         verbose_name='Локация',
         related_name='locations',
+        default=random_location,
     )
     tonnage = models.PositiveIntegerField(
         verbose_name='Доступный вес',
@@ -114,16 +115,6 @@ class Transport(BaseModel):
 
     def __str__(self):
         return self.number
-
-    @staticmethod
-    def random_location():
-        random_location = random.choice(Location.objects.all())
-        return random_location
-
-    def save(self, *args, **kwargs):
-        if not self.current_location:
-            self.current_location = self.random_location()
-            super().save(*args, **kwargs)
 
 
 class Cargo(BaseModel):
