@@ -79,6 +79,7 @@ docker-compose up -d
 ```
 api/v1/cargos/ (POST)
 api/v1/cargos/ (GET)
+api/v1/cargos/?weight__lte={значение для фильтрации по весу} (GET)
 api/v1/cargos/{id}/ (GET)
 api/v1/cargos/{id}/ (PATCH)
 api/v1/cargos/{id}/ (DELETE)

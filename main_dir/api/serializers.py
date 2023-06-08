@@ -28,6 +28,7 @@ class CargoSerializer(serializers.ModelSerializer):
             'number_of_nearest_transport',
         ]
 
+
     def filter_transport(self, obj: Cargo) -> int:
         """
         Метод подсчитывающий количество близлежащего транспорта
@@ -89,7 +90,7 @@ class CargoDetailSerializer(serializers.ModelSerializer):
             distance = geodesic(location_up, unit_location).mi
             unit_detail = {
                 'number': unit.number,
-                'distance': f'{distance} миль до текущего груза'
+                'distance': round(distance, 3)
             }
             transport_list.append(unit_detail)
         return sorted(transport_list, key=lambda x: x['distance'])

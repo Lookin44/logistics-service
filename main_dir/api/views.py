@@ -1,7 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 
-from .filters import CargoFilter
+from .filters import CargoFilter, CargoDistanceFilter
 from .models import Cargo, Transport
 from .serializers import (
     CargoSerializer,
@@ -15,12 +15,13 @@ class CargoViewSet(viewsets.ModelViewSet):
             'location_up',
             'location_delivery'
     )
-    serializer_class = CargoDetailSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']
     filter_backends = [DjangoFilterBackend]
     filterset_class = CargoFilter
+    serializer_class = CargoSerializer
 
     def get_serializer_class(self):
+
         if self.action == 'list':
             return CargoSerializer
         elif self.action == 'retrieve':
