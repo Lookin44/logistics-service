@@ -28,25 +28,44 @@ class CargoSerializer(serializers.ModelSerializer):
             'number_of_nearest_transport',
         ]
 
-
-    def filter_transport(self, obj: Cargo) -> int:
+    def filter_transport(self, obj: Cargo):
         """
         Метод подсчитывающий количество близлежащего транспорта
         """
+        distance = self.context.get('distance', None)
         count = 0
         transports = Transport.objects.select_related('current_location')
         location_up = (
             obj.location_up.latitude,
             obj.location_up.longitude
         )
-        for unit in transports:
-            lat = unit.current_location.latitude
-            long = unit.current_location.longitude
-            unit_location = (lat, long)
-            if geodesic(location_up, unit_location).mi <= 450:
-                count += 1
+        if distance:
+            count = []
+            for unit in transports:
+                lat = unit.current_location.latitude
+                long = unit.current_location.longitude
+                unit_location = (lat, long)
+                current_distance = round(
+                    geodesic(location_up, unit_location).mi, 3
+                )
+                if current_distance <= int(distance):
+                    unit_detail = {
+                        'number': unit.number,
+                        'distance': current_distance
+                    }
+                    count.append(unit_detail)
 
-            return count
+        else:
+            for unit in transports:
+                lat = unit.current_location.latitude
+                long = unit.current_location.longitude
+                unit_location = (lat, long)
+                if geodesic(location_up, unit_location).mi <= 450:
+                    count += 1
+
+        return sorted(
+            count, key=lambda x: x['distance']
+        ) if distance else count
 
 
 class CargoDetailSerializer(serializers.ModelSerializer):

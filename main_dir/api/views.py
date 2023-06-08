@@ -28,6 +28,12 @@ class CargoViewSet(viewsets.ModelViewSet):
             return CargoDetailSerializer
         return super().get_serializer_class()
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        distance = self.request.query_params.get('distance')
+        context.update({'distance': distance})
+        return context
+
 
 class TransportViewSet(viewsets.ModelViewSet):
     queryset = Transport.objects.select_related(
